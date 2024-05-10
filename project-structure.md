@@ -15,14 +15,15 @@ search page with filters including
 Flask (Python)
 
 ### Queries
-`get` all movies
-`get` movies by exact genre 
-`get` movies within date range
-`get` movies by title
-`update` or `add` a new movie entry
-`delet` a movie entry
+- `get` all movies
+- `get` movies by exact genre 
+- `get` movies within date range
+- `get` movies by title
+- `update` or `add` a new movie entry
+- `delete` a movie entry
 
 IDEA: api endpoints for each get query that all call a 'all-in-one' query that sets unused parameters to default values
+
 For example, a get all movies query may try
 ```
 SELECT * from movies
