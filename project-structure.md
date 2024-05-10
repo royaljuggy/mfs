@@ -2,7 +2,8 @@
 Some notes about how I'm structuring this full-stack app
 
 ## Front-end
-React
+Built in React with:
+
 home-page
 
 search page with filters including
