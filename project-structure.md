@@ -3,7 +3,8 @@ Some notes about how I'm structuring this full-stack app
 
 ## Front-end
 React
-- home-page
+home-page
+
 search page with filters including
 - genre (drop-down menu)
 - title (text search)
