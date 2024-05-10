@@ -4,10 +4,10 @@ Some notes about how I'm structuring this full-stack app
 ## Front-end
 React
 - home-page
-- search page with filters including
-- > genre (drop-down menu)
-  > title (text search)
-  > date (date range)
+search page with filters including
+- genre (drop-down menu)
+- title (text search)
+- date (date range)
 
 ## Back-end
 Flask (Python)
