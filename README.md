@@ -5,5 +5,6 @@ mfs - a movie file system
 ### React
 ### Python
 - psycopg2 `pip install psycopg2-binary` or `pip install psycopg2`
+- pandas `pip install pandas`
 
 ## Running the Application
