@@ -3,6 +3,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# jmeksava
+*credentials*
+
 # C extensions
 *.so
 
