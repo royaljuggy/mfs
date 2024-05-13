@@ -19,6 +19,7 @@ Flask (Python)
 - `get` movies by exact genre 
 - `get` movies within date range
 - `get` movies by title
+- `get` movies by score range
 - `update` or `add` a new movie entry
 - `delete` a movie entry
 
@@ -30,6 +31,7 @@ SELECT * from movies
 WHERE date > 1900-01-01 AND date < 3000-01-01
   AND 1 == 1 # in normal places this would be genre == ...
   AND 1 LIKE 1 # in normal places this would be the title; this clause itself would be supplied by subqueries
+  AND score => 0 AND score <= 10
 ```
 While querying by title and date would try:
 ```
@@ -37,6 +39,7 @@ SELECT * from movies
 WHERE date > 2001-01-01 AND date < 2004-01-01
   AND 1 == 1 # genre
   AND title LIKE 'christmas'
+  AND score => 0 AND score <= 10
 ```
 
 ## Database
@@ -47,6 +50,8 @@ Tables:
 - movies
 - genres
 - actors
+- directors
+- writers
 
 ### Bonus
 Ease-of-use: Python script that automatically parses and injects movie data in a .csv into the relevant postgres tables
