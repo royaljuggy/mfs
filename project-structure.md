@@ -1,4 +1,9 @@
 # Programming Notes
+Order of development; bottom-up?
+1. Schema design, data import script and schema creation scripts
+2. Flask endpoints
+3. React front-end
+
 Some notes about how I'm structuring this full-stack app
 
 ## Front-end
