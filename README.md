@@ -18,3 +18,14 @@ One-time installations you need to do. Obviously first is installing all require
 Once you're done that, make sure to create an empty Postgres database for this project. I've named mine 'movie-file-system' and labelled it in my private credentials file used by the import script.
 
 ## Running the Application
+### Front-end
+
+### Back-end
+A full-fledged guide is available at [https://realpython.com/flask-project/](real python)
+But for our purposes, running the following in the python directory should suffice:
+
+```
+python -m venv venv
+.\venv\Scripts\activate
+python -m flask --app server run --port 8000 --debug
+```
