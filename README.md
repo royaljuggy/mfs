@@ -6,6 +6,8 @@ mfs - a movie file system
 ### Python
 - psycopg2 `pip install psycopg2-binary` or `pip install psycopg2`
 - pandas `pip install pandas`
+- flask `pip install flask`
+
 ### Schema
 - Postgres installation
 - (Optional): pgAdmin, a user-friendly way of viewing your schemas
