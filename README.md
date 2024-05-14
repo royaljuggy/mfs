@@ -21,7 +21,7 @@ Once you're done that, make sure to create an empty Postgres database for this p
 ### Front-end
 
 ### Back-end
-A full-fledged guide is available at [https://realpython.com/flask-project/](real python)
+A full-fledged guide is available at [real python](https://realpython.com/flask-project/)
 But for our purposes, running the following in the python directory should suffice:
 
 ```
