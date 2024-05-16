@@ -22,11 +22,18 @@ def db_wrapper(sql_query, args=None):
     cur = conn.cursor()
     cur.execute(sql_query, args)
     conn.commit()
-    ret = (jsonify({'response:': 401}), 401)
+    ret = (jsonify({'response:': 401, 'value': []}), 401)
 
     try:
         tuples = cur.fetchall()
-        ret = (jsonify({'response': 201 , 'value': tuples}), 201)
+
+        cols=[x[0] for x in cur.description]
+        print(cols)
+        json_data=[]
+        for result in tuples:
+            json_data.append(dict(zip(cols,result)))
+
+        ret = (jsonify({'response': 201 , 'value': json_data}), 201)
     except: # TODO: fix error handling (no tuples returned?)
         print("Exception occurred.")
     finally:
