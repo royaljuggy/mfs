@@ -18,7 +18,15 @@ One-time installations you need to do. Obviously first is installing all require
 Once you're done that, make sure to create an empty Postgres database for this project. I've named mine 'movie-file-system' and labelled it in my private credentials file used by the import script.
 
 ## Running the Application
+In tandem, run the front-end and back-end in two different terminals.
+
 ### Front-end
+In the react directory, run `npm run dev`
+Or,
+```
+cd react
+npm run dev
+```
 
 ### Back-end
 A full-fledged guide is available at [real python](https://realpython.com/flask-project/)
