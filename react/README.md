@@ -1,5 +1,6 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+For the layout/design of each page, see [below](https://github.com/royaljuggy/mfs/edit/main/react/README.md?plain=1#L41)
 ## Getting Started
 
 First, run the development server:
@@ -36,3 +37,28 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+## Page Layout
+For getting started deploying the front-end, scroll down just a little bit!
+
+### Pages
+Home-page
+- About the application
+- Nav-bar to other pages
+
+Search page
+- Text field for query string
+- Drop-down, form-type HTML element for filtering, with: the ability to filter
+- > rating range
+  > genres (can populate by querying table for all unique genres, and creating the drop-down dynamically)
+  > year range (date-time element)
+  > score range
+  > star (drop-down like genre)
+  > runtime range
+- Also add a drop-down to sort results based on columns available in the table + by ascending or descending
+
+About page
+- About the project, reasons for its creation
+- About the author
+- etc.
+
