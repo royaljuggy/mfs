@@ -68,6 +68,7 @@ def get_movies_filtered():
     query = 'SELECT * FROM movies'
     args = []
 
+    # TODO: SECURITY FLAW - need to sanitize queries.
     for f, op in zip(filters, ops):
         if f in request.args:
             parsed_filter = f.split(separator)[0]
@@ -78,6 +79,3 @@ def get_movies_filtered():
             args.append(request.args.get(f))
     print(query)
     return db_wrapper(query, args)
-
-
-
