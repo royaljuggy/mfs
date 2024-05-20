@@ -15,6 +15,7 @@ search page with filters including
 - genre (drop-down menu)
 - title (text search)
 - date (date range)
+- loading icon while search API is querying DB
 
 ## Back-end
 Flask (Python)
