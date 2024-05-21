@@ -28,6 +28,8 @@ Or,
 ```
 cd react
 npm run dev
+
+npx tailwindcss build globals.css -o output.css
 ```
 
 ### Back-end
