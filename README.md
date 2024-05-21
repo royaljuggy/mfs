@@ -3,6 +3,8 @@ mfs - a movie file system
 
 ## Libraries/Downloads Needed
 ### React
+- tailwind
+- next.js
 ### Python
 - psycopg2 `pip install psycopg2-binary` or `pip install psycopg2`
 - pandas `pip install pandas`
