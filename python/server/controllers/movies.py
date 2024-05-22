@@ -28,7 +28,6 @@ def db_wrapper(sql_query, args=None):
         tuples = cur.fetchall()
 
         cols=[x[0] for x in cur.description]
-        print(cols)
         json_data=[]
         for result in tuples:
             json_data.append(dict(zip(cols,result)))
@@ -39,6 +38,9 @@ def db_wrapper(sql_query, args=None):
     finally:
         cur.close()
         conn.close()
+    
+    # add headers - https://stackoverflow.com/questions/26980713/solve-cross-origin-resource-sharing-with-flask
+    ret[0].headers.add('Access-Control-Allow-Origin', '*')
     return ret
 
 # TODO: query builder class?
@@ -72,10 +74,15 @@ def get_movies_filtered():
     for f, op in zip(filters, ops):
         if f in request.args:
             parsed_filter = f.split(separator)[0]
+            rhs = ' %s'
             if len(args) == 0:
-                query += ' WHERE ' + parsed_filter + ' ' + op + ' %s'
+                query += ' WHERE ' + parsed_filter + ' ' + op + rhs
             else:
-                query += ' AND ' + parsed_filter + ' ' + op + ' %s'
-            args.append(request.args.get(f))
-    print(query)
+                query += ' AND ' + parsed_filter + ' ' + op + rhs
+            
+            if op == 'LIKE':
+                args.append('%'+request.args.get(f)+'%')
+            else:
+                args.append(request.args.get(f))
+    print(args)
     return db_wrapper(query, args)
