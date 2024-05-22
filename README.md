@@ -3,6 +3,9 @@ mfs - a movie file system
 
 ## Libraries/Downloads Needed
 ### React
+- tailwind
+- next.js
+- react-router-dom
 ### Python
 - psycopg2 `pip install psycopg2-binary` or `pip install psycopg2`
 - pandas `pip install pandas`
@@ -26,6 +29,8 @@ Or,
 ```
 cd react
 npm run dev
+
+npx tailwindcss build globals.css -o output.css
 ```
 
 ### Back-end
