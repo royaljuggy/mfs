@@ -5,6 +5,7 @@ mfs - a movie file system
 ### React
 - tailwind
 - next.js
+- react-router-dom
 ### Python
 - psycopg2 `pip install psycopg2-binary` or `pip install psycopg2`
 - pandas `pip install pandas`
