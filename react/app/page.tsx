@@ -1,4 +1,3 @@
-import akane from './images/akane1.jpg'
 import React from 'react'
 
 export default function Home() {
