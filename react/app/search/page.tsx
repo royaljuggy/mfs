@@ -5,67 +5,69 @@ import styles from './styles.module.css';
 import { MovieList } from '../shared/components';
 import '../shared/styles.module.css'
 
-// Calls the API, querying based on the form's data
-async function queryMovie(event: FormEvent<HTMLFormElement>) {
-  event.preventDefault()
+const defaultNumber = -1
+const defaultString = '456'
+class Filters {
+  genre: string = defaultString
+  id: number = defaultNumber
+  rating_from: number = defaultNumber
+  rating_to: number = defaultNumber
+  runtime_from: number = defaultNumber
+  runtime_to: number = defaultNumber
+  score_from: number = defaultNumber
+  score_to: number = defaultNumber
+  star: string = defaultString
+  title: string = defaultString
+  year_from: string = defaultString
+  year_to: string = defaultString
+};
 
-  const formData = new FormData(event.currentTarget)
-  console.log(formData)
-  const response = await fetch('/api/submit', {
-    method: 'POST',
-    body: formData,
-  })
-
-  // Handle response if necessary
-  const data = await response.json()
-  // ...
-}
-
-async function callAPI(): Promise<Response[]> {
-  try {
-		const res = await fetch(`http://127.0.0.1:8000/movies`);
-		const data = await res.json();
-		// console.log(data.value);
-    return Array.from(data.value)
-	} catch (err) {
-		console.log("error");
-    return []
-	}
-}
-
-// TODO use react query or something
 export default function Search() {
-  // var movies = await callAPI()
-  // movies = movies.slice(0, 10)
-
-  const [search, setSearch] = useState<FormData>()
-  const [query, setQuery] = useState({})
+  const [query, setQuery] = useState<Filters>()
   const [movies, setMovies] = useState([])
 
-  const formSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    console.log("Are we here")
-    console.log(event.currentTarget)
-    setSearch(new FormData(event.currentTarget))
+  function buildFilterString(filters: Filters) {
+    var ret = '?'
+    const properties = Object.getOwnPropertyNames(filters)
+    var isFirst: boolean = true
+    Object.entries(filters).forEach(([property, value]) => {
+      console.log(property + " '" + value+"'")
+      console.log(typeof(value))
+      if (value != '' && value != 0) {
+        // http://127.0.0.1:8000/movies/filtered?genre=&id=0&rating_from=0&rating_to=0&runtime_from=0&runtime_to=0&score_from=0&score_to=0&star=&title=&year_from=&year_to=
+        // No default parameters, build filter
+        if (isFirst) {
+          ret += `${property}=${value}`
+          isFirst = false
+        } else {
+          ret += `&${property}=${value}`
+        }
+        
+      }
+    })
+    console.log(ret)
+    return ret
   }
 
   useEffect(() => {
     if (query) {
       console.log('query: ' + query)
-      // TODO: take parameters from form, and create key-value pairs for query, like ?tile=Blue&dateFrom=1996-01-01, etc.
+      // TODO: take parameters from form, and create key-value pairs for query, like ?title=Blue&dateFrom=1996-01-01, etc.
 
       const apiRoot = 'http://127.0.0.1:8000'
       const subsites = '/movies/filtered'
-      const filterString = '?title=Blue' //...
+      // const filterString = '?title=Blue' //...
+      const filterString = buildFilterString(query)
 
+      console.log(apiRoot + subsites + filterString)
       fetch(apiRoot + subsites + filterString)
       .then(res => res.json())
       .then(data => {
         // Movies array that holds json objects pertaining to our results
         const movies = data.value
 
-        // For now, take first 10 results
-        const display = movies.slice(0, 10)
+        // For now, take first 100 results to prevent to browser from over loading
+        const display = movies.slice(0, 100)
 
         setMovies(display)
         return display
@@ -73,53 +75,57 @@ export default function Search() {
     }
   }, [query])
 
-  const [genre, setGenre] = useState('');
-  const [id, setId] = useState(0);
-  const [ratingFrom, setRatingFrom] = useState('');
-  const [ratingTo, setRatingTo] = useState('');
-  const [runtimeFrom, setRuntimeFrom] = useState(0);
-  const [runtimeTo, setRuntimeTo] = useState(0);
-  const [scoreFrom, setScoreFrom] = useState(0);
-  const [scoreTo, setScoreTo] = useState(0);
-  const [star, setStar] = useState('');
-  const [title, setTitle] = useState('');
-  const [yearFrom, setYearFrom] = useState('');
-  const [yearTo, setYearTo] = useState('');
+  const [genre, set_genre] = useState('');
+  const [id, set_id] = useState(0);
+  const [rating_from, set_rating_from] = useState(0);
+  const [rating_to, set_rating_to] = useState(0);
+  const [runtime_from, set_runtime_from] = useState(0);
+  const [runtime_to, set_runtime_to] = useState(0);
+  const [score_from, set_score_from] = useState(0);
+  const [score_to, set_score_to] = useState(0);
+  const [star, set_star] = useState('');
+  const [title, set_title] = useState('');
+  const [year_from, set_year_from] = useState('');
+  const [year_to, set_year_to] = useState('');
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    const formData = {
+    const formData: Filters = {
       genre,
       id,
-      ratingFrom,
-      ratingTo,
-      runtimeFrom,
-      runtimeTo,
-      scoreFrom,
-      scoreTo,
+      rating_from: rating_from,
+      rating_to: rating_to,
+      runtime_from: runtime_from,
+      runtime_to: runtime_to,
+      score_from: score_from,
+      score_to: score_to,
       star,
       title,
-      yearFrom,
-      yearTo,
+      year_from: year_from,
+      year_to: year_to,
     };
     console.log('Form Data:', formData);
     // Perform search or any other logic with formData
     setQuery(formData)
   };
 
+  // todo: don't use any
+  const handleChange = (setter: any, defaultValue: string) => (e: any) => {
+    const value = e.target.value;
+    if (value !== defaultValue) {
+      setter(value);
+    }
+  };
+
+  const handleNumberChange = (setter: any, defaultValue: number) => (e: any) => {
+    const value = Number(e.target.value);
+    if (value !== defaultValue) {
+      setter(value);
+    }
+  };
   return (
     <div>
-      Hi there!
-      {/* <div className="search-form">
-        <h2>What would you like to search for?</h2>
-        <form>
-          <input type="text"></input>
-          <button type='button'>submit</button>
-
-          <label htmlFor="from-year">Start Year</label>
-          <input type="date" id="from-year"></input>
-        </form>
-      </div> */}
+      <h2>For now, only the top 50? movies.</h2>
       
       {/* <form className="max-w-md mx-auto" onSubmit={formSubmit}>   
           <label htmlFor="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
@@ -143,7 +149,7 @@ export default function Search() {
               name="genre"
               value={genre}
               className={styles.input}
-              onChange={(e) => setGenre(e.target.value)}
+              onChange={handleChange(set_genre, '')}
             />
           </div>
           <div className={styles.formGroup}>
@@ -154,49 +160,51 @@ export default function Search() {
               name="id"
               value={id}
               className={styles.input}
-              onChange={(e) => setId(Number(e.target.value))}
+              onChange={handleNumberChange(set_id, 0)}
             />
           </div>
           <div className={styles.formGroup}>
             <label className={styles.label}>Rating:</label>
             <input
-              type="text"
-              id="ratingFrom"
-              name="ratingFrom"
+              type="number"
+              step="0.1"
+              id="rating_from"
+              name="rating_from"
               placeholder="From"
-              value={ratingFrom}
+              value={rating_from}
               className={styles.input}
-              onChange={(e) => setRatingFrom(e.target.value)}
+              onChange={handleNumberChange(set_rating_from, 0)}
             />
             <input
-              type="text"
-              id="ratingTo"
-              name="ratingTo"
+              type="number"
+              step="0.1"
+              id="rating_to"
+              name="rating_to"
               placeholder="To"
-              value={ratingTo}
+              value={rating_to}
               className={styles.input}
-              onChange={(e) => setRatingTo(e.target.value)}
+              onChange={handleNumberChange(set_rating_to, 0)}
             />
           </div>
           <div className={styles.formGroup}>
             <label className={styles.label}>Runtime (minutes):</label>
             <input
               type="number"
-              id="runtimeFrom"
-              name="runtimeFrom"
+              id="runtime_from"
+              name="runtime_from"
               placeholder="From"
-              value={runtimeFrom}
+              value={runtime_from}
               className={styles.input}
-              onChange={(e) => setRuntimeFrom(Number(e.target.value))}
+              onChange={handleNumberChange(set_runtime_from, 0)}
             />
             <input
               type="number"
-              id="runtimeTo"
-              name="runtimeTo"
+              id="runtime_to"
+              name="runtime_to"
               placeholder="To"
-              value={runtimeTo}
+              value={runtime_to}
               className={styles.input}
-              onChange={(e) => setRuntimeTo(Number(e.target.value))}
+              onChange={handleNumberChange(set_runtime_to, 0)}
             />
           </div>
           <div className={styles.formGroup}>
@@ -204,22 +212,22 @@ export default function Search() {
             <input
               type="number"
               step="0.1"
-              id="scoreFrom"
-              name="scoreFrom"
+              id="score_from"
+              name="score_from"
               placeholder="From"
-              value={scoreFrom}
+              value={score_from}
               className={styles.input}
-              onChange={(e) => setScoreFrom(Number(e.target.value))}
+              onChange={handleNumberChange(set_score_from, 0)}
             />
             <input
               type="number"
               step="0.1"
-              id="scoreTo"
-              name="scoreTo"
+              id="score_to"
+              name="score_to"
               placeholder="To"
-              value={scoreTo}
+              value={score_to}
               className={styles.input}
-              onChange={(e) => setScoreTo(Number(e.target.value))}
+              onChange={handleNumberChange(set_score_to, 0)}
             />
           </div>
           <div className={styles.formGroup}>
@@ -230,7 +238,7 @@ export default function Search() {
               name="star"
               value={star}
               className={styles.input}
-              onChange={(e) => setStar(e.target.value)}
+              onChange={handleChange(set_star, '')}
             />
           </div>
           <div className={styles.formGroup}>
@@ -241,28 +249,28 @@ export default function Search() {
               name="title"
               value={title}
               className={styles.input}
-              onChange={(e) => setTitle(e.target.value)}
+              onChange={handleChange(set_title, '')}
             />
           </div>
           <div className={styles.formGroup}>
             <label className={styles.label}>Year:</label>
             <input
               type="date"
-              id="yearFrom"
-              name="yearFrom"
+              id="year_from"
+              name="year_from"
               placeholder="From"
-              value={yearFrom}
+              value={year_from}
               className={styles.input}
-              onChange={(e) => setYearFrom(e.target.value)}
+              onChange={handleChange(set_year_from, '')}
             />
             <input
               type="date"
-              id="yearTo"
-              name="yearTo"
+              id="year_to"
+              name="year_to"
               placeholder="To"
-              value={yearTo}
+              value={year_to}
               className={styles.input}
-              onChange={(e) => setYearTo(e.target.value)}
+              onChange={handleChange(set_year_to, '')}
             />
           </div>
           <button type="submit" className={styles.button}>Search</button>
