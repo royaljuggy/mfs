@@ -8,6 +8,8 @@ __pycache__/
 
 *package.json
 *package.lock.json
+react/package.json
+react/package-lock.json
 
 # react
 .DS_*
