@@ -20,6 +20,7 @@ class Filters {
   title: string = defaultString
   year_from: string = defaultString
   year_to: string = defaultString
+  order_by: string = defaultString
 };
 
 export default function Search() {
@@ -59,8 +60,9 @@ export default function Search() {
       // const filterString = '?title=Blue' //...
       const filterString = buildFilterString(query)
 
-      console.log(apiRoot + subsites + filterString)
-      fetch(apiRoot + subsites + filterString)
+      const apiURL = apiRoot + subsites + filterString
+      console.log(apiURL)
+      fetch(apiURL)
       .then(res => res.json())
       .then(data => {
         // Movies array that holds json objects pertaining to our results
@@ -87,6 +89,7 @@ export default function Search() {
   const [title, set_title] = useState('');
   const [year_from, set_year_from] = useState('');
   const [year_to, set_year_to] = useState('');
+  const [order_by, set_order_by] = useState('');
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
@@ -103,6 +106,7 @@ export default function Search() {
       title,
       year_from: year_from,
       year_to: year_to,
+      order_by: order_by
     };
     console.log('Form Data:', formData);
     // Perform search or any other logic with formData
@@ -272,6 +276,25 @@ export default function Search() {
               className={styles.input}
               onChange={handleChange(set_year_to, '')}
             />
+          </div>
+          <div className={styles.formGroup}>
+            <label className={styles.label} htmlFor="order_by">Order By:</label>
+            <select
+              id="order_by"
+              name="order_by"
+              value={order_by}
+              className={styles.select}
+              onChange={handleChange(set_order_by, '')}
+            >
+              <option value="">Select Field</option>
+              <option value="title">Title</option>
+              <option value="rating">Rating</option>
+              <option value="genre">Genre</option>
+              <option value="year">Year</option>
+              <option value="score">Score</option>
+              <option value="star">Star</option>
+              <option value="runtime">Runtime</option>
+            </select>
           </div>
           <button type="submit" className={styles.button}>Search</button>
         </form>
