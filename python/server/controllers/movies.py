@@ -55,14 +55,18 @@ def get_all_movies():
 #   http://localhost:8000/movies/filtered?title=%Blue%
 #   http://localhost:8000/movies/filtered?runtime_from=50&runtime_to_100&genre=Adventure
 def get_movies_filtered():
-    # with filters like date range, name, etc.\
+    # with filters like date range, name, etc.
     separator = '_'
 
+    # TODO: make more resilient (no hard coding...)
+    non_comparables = ['order_by', 'groupby']
+
     # The RHS column to query from
-    filters = ['title', 'rating_from', 'rating_to', 'genre', 'year_from', 'year_to', 'score_from', 'score_to', 'star', 'runtime_from', 'runtime_to']
+    filters = ['title', 'rating_from', 'rating_to', 'genre', 'year_from', 'year_to', 'score_from', 'score_to', 'star', 'runtime_from', 'runtime_to', 'order_by']
 
     # Comparison operator between argument and column
-    ops = ['LIKE', '>= ', '<=', '=', '>=', '<=', '>=', '<=', '=', '>=', '<=']
+    # XXX is a placeholder, for orderby we use the user supplied ASC/DESC
+    ops = ['LIKE', '>= ', '<=', '=', '>=', '<=', '>=', '<=', '=', '>=', '<=', 'XXX']
 
     # TODO: better string builder logic (concat is slow)
     # TODO: front-end needs to handle 'LIKE' argument: add leading and trailing % to search within whole string
@@ -75,14 +79,25 @@ def get_movies_filtered():
         if f in request.args:
             parsed_filter = f.split(separator)[0]
             rhs = ' %s'
-            if len(args) == 0:
-                query += ' WHERE ' + parsed_filter + ' ' + op + rhs
+            if f not in non_comparables:
+                if len(f.split(separator)) == 1: # string column, title, genre, star, etc.
+                    parsed_filter = 'LOWER(' + parsed_filter + ')'
+                    rhs = ' LOWER(%s)'
+                # Comparison filter
+                if len(args) == 0:
+                    # TODO: use string.format(...)
+                    query += ' WHERE ' + parsed_filter + ' ' + op + rhs
+                else:
+                    query += ' AND ' + parsed_filter + ' ' + op + rhs
+                
+                if op == 'LIKE':
+                    args.append('%'+request.args.get(f)+'%')
+                else:
+                    args.append(request.args.get(f))
             else:
-                query += ' AND ' + parsed_filter + ' ' + op + rhs
-            
-            if op == 'LIKE':
-                args.append('%'+request.args.get(f)+'%')
-            else:
-                args.append(request.args.get(f))
-    print(args)
+                # Sortby filter (likely) TODO: enforce non-comparables are always checked at the end.
+                order = 'ASC' # default for now TODO
+                col_to_order_by = request.args.get(f)
+                query += ' ORDER BY ' + col_to_order_by + ' ' + order
+    print(query)
     return db_wrapper(query, args)
