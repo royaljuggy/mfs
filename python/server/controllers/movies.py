@@ -59,14 +59,17 @@ def get_movies_filtered():
     separator = '_'
 
     # TODO: make more resilient (no hard coding...)
-    non_comparables = ['order_by', 'groupby']
+    order_by = 'order_by'
+    order_direction = 'order_direction'
+    non_comparable_placeholder = 'XXX'
+    non_comparables = [order_by, 'groupby', order_direction]
 
     # The RHS column to query from
-    filters = ['title', 'rating_from', 'rating_to', 'genre', 'year_from', 'year_to', 'score_from', 'score_to', 'star', 'runtime_from', 'runtime_to', 'order_by']
+    filters = ['title', 'rating_from', 'rating_to', 'genre', 'year_from', 'year_to', 'score_from', 'score_to', 'star', 'runtime_from', 'runtime_to', order_by, order_direction]
 
     # Comparison operator between argument and column
     # XXX is a placeholder, for orderby we use the user supplied ASC/DESC
-    ops = ['LIKE', '>= ', '<=', '=', '>=', '<=', '>=', '<=', '=', '>=', '<=', 'XXX']
+    ops = ['LIKE', '>= ', '<=', '=', '>=', '<=', '>=', '<=', '=', '>=', '<=', non_comparable_placeholder, non_comparable_placeholder]
 
     # TODO: better string builder logic (concat is slow)
     # TODO: front-end needs to handle 'LIKE' argument: add leading and trailing % to search within whole string
@@ -94,10 +97,15 @@ def get_movies_filtered():
                     args.append('%'+request.args.get(f)+'%')
                 else:
                     args.append(request.args.get(f))
-            else:
+            elif f == order_by:
                 # Sortby filter (likely) TODO: enforce non-comparables are always checked at the end.
-                order = 'ASC' # default for now TODO
                 col_to_order_by = request.args.get(f)
-                query += ' ORDER BY ' + col_to_order_by + ' ' + order
+                query += ' ORDER BY ' + col_to_order_by
+            elif f == order_direction:
+                # we handle ORDER BY above (before the sort order). At the end, let's append the order direction
+                order = 'ASC' # default for now TODO
+                if request.args.get(f) == 'DESC':
+                    order = 'DESC'
+                query += ' ' + order
     print(query)
     return db_wrapper(query, args)
