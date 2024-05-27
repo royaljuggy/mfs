@@ -10,3 +10,6 @@ port=...
 ```
 
 that you need to create in this directory. It is used in the import_data and drop_table scripts, which allow you to import your own dataset into the schema! The credentials.txt file is used to connect to create a postgres connection.
+
+## Dataset
+The dataset is from kaggle. See https://www.kaggle.com/datasets/danielgrijalvas/movies
