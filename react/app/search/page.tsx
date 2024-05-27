@@ -21,6 +21,7 @@ class Filters {
   year_from: string = defaultString
   year_to: string = defaultString
   order_by: string = defaultString
+  order_direction: string = 'ASC'
 };
 
 export default function Search() {
@@ -32,8 +33,8 @@ export default function Search() {
     const properties = Object.getOwnPropertyNames(filters)
     var isFirst: boolean = true
     Object.entries(filters).forEach(([property, value]) => {
-      console.log(property + " '" + value+"'")
-      console.log(typeof(value))
+      // console.log(property + " '" + value+"'")
+      // console.log(typeof(value))
       if (value != '' && value != 0) {
         // http://127.0.0.1:8000/movies/filtered?genre=&id=0&rating_from=0&rating_to=0&runtime_from=0&runtime_to=0&score_from=0&score_to=0&star=&title=&year_from=&year_to=
         // No default parameters, build filter
@@ -90,6 +91,7 @@ export default function Search() {
   const [year_from, set_year_from] = useState('');
   const [year_to, set_year_to] = useState('');
   const [order_by, set_order_by] = useState('');
+  const [order_direction, set_order_direction] = useState('ASC');
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
@@ -106,7 +108,8 @@ export default function Search() {
       title,
       year_from: year_from,
       year_to: year_to,
-      order_by: order_by
+      order_by: order_by,
+      order_direction: order_direction,
     };
     console.log('Form Data:', formData);
     // Perform search or any other logic with formData
@@ -119,6 +122,10 @@ export default function Search() {
     if (value !== defaultValue) {
       setter(value);
     }
+  };
+
+  const handleRadioChange = (setter: any) => (e: any) => {
+    setter(e.target.value)
   };
 
   const handleNumberChange = (setter: any, defaultValue: number) => (e: any) => {
@@ -296,6 +303,29 @@ export default function Search() {
               <option value="runtime">Runtime</option>
             </select>
           </div>
+          <div className={styles.formGroup}>
+        <label className={styles.label}>Order Direction:</label>
+        <div>
+          <input
+            type="radio"
+            id="asc"
+            name="order_direction"
+            value="ASC"
+            checked={order_direction === 'ASC'}
+            onChange={handleRadioChange(set_order_direction)}
+          />
+          <label className={styles.radioLabel} htmlFor="asc">ASC</label>
+          <input
+            type="radio"
+            id="desc"
+            name="order_direction"
+            value="DESC"
+            checked={order_direction === 'DESC'}
+            onChange={handleRadioChange(set_order_direction)}
+          />
+          <label className={styles.radioLabel} htmlFor="desc">DESC</label>
+        </div>
+      </div>
           <button type="submit" className={styles.button}>Search</button>
         </form>
       <MovieList movies={movies} />

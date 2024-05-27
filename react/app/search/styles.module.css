@@ -17,6 +17,11 @@
     font-weight: bold;
   }
   
+  .radioLabel {
+    margin-left: 0.5rem;
+    margin-right: 1rem;
+  }
+  
   .input, .select {
     width: calc(100% - 22px);
     padding: 10px;
