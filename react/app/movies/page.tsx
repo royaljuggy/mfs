@@ -8,6 +8,9 @@ export default function AllMovies() {
   const [movies, setMovies] = useState([])
 
   useEffect(() => {
+
+    // TODO? move into pages directory, to allow router.isFallback (loading icon) https://stackoverflow.com/questions/76267351/how-to-fetch-data-server-side-in-the-latest-next-js-tried-getstaticprops-but-it
+
     if (movies.length == 0) {
       // TODO: take parameters from form, and create key-value pairs for query, like ?tile=Blue&dateFrom=1996-01-01, etc.
       fetch(`http://127.0.0.1:8000/movies`)
