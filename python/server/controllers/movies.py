@@ -2,6 +2,7 @@
 from flask import Blueprint, jsonify, request
 import psycopg2
 
+base_url = '/movies'
 movies_controller = Blueprint("api", __name__)
 
 # A wrapper function that opens and closes the database connection
@@ -44,12 +45,17 @@ def db_wrapper(sql_query, args=None):
     return ret
 
 # TODO: query builder class?
-@movies_controller.route('/movies', methods=['GET'])
+@movies_controller.route(f'{base_url}', methods=['GET'])
 def get_all_movies():
     sql_query = '''SELECT * FROM movies'''
     return db_wrapper(sql_query, args=None)
 
-@movies_controller.route('/movies/filtered', methods=['GET'])
+@movies_controller.route(f'{base_url}/<int:movie_id>', methods=['GET'])
+def get_movie_by_id(movie_id):
+    sql_query = 'SELECT * FROM movies WHERE id = %s'
+    return db_wrapper(sql_query, args=[movie_id])
+
+@movies_controller.route(f'{base_url}/filtered', methods=['GET'])
 # Examples: http://localhost:8000/movies/filtered,
 #   http://localhost:8000/movies/filtered?title=Blue
 #   http://localhost:8000/movies/filtered?title=%Blue%
@@ -109,3 +115,9 @@ def get_movies_filtered():
                 query += ' ' + order
     print(query)
     return db_wrapper(query, args)
+
+# Sanitize a user-supplied string
+# ex. A use supplies: sort by; DROP TABLE *
+def sanitize(s):
+    # TODO
+    return s
