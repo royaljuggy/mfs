@@ -5,10 +5,14 @@ import psycopg2
 base_url = '/movies'
 movies_controller = Blueprint("api", __name__)
 
-# A wrapper function that opens and closes the database connection
-# Required: passing the raw sql_query
-# Optional: args, the arguments to the sql_query. None if unused.
 def db_wrapper(sql_query, args=None):
+    """
+    A wrapper function ("query builder") that opens and closes the database connection
+    Required: passing the raw sql_query
+    Optional: args, the arguments to the sql_query. None if unused.
+    Note: use of parameterized queries (cur.execute) sanitizes the queries.
+    """
+    
     separator = '='
 
     credentials_file = open("credentials.txt", "r")
@@ -40,28 +44,37 @@ def db_wrapper(sql_query, args=None):
         cur.close()
         conn.close()
     
-    # add headers - https://stackoverflow.com/questions/26980713/solve-cross-origin-resource-sharing-with-flask
+    # Add headers for CORS - https://stackoverflow.com/questions/26980713/solve-cross-origin-resource-sharing-with-flask
     ret[0].headers.add('Access-Control-Allow-Origin', '*')
     return ret
 
-# TODO: query builder class?
 @movies_controller.route(f'{base_url}', methods=['GET'])
 def get_all_movies():
+    """
+    Get all movies
+    """
     sql_query = '''SELECT * FROM movies'''
     return db_wrapper(sql_query, args=None)
 
 @movies_controller.route(f'{base_url}/<int:movie_id>', methods=['GET'])
 def get_movie_by_id(movie_id):
+    """
+    Get movie by id
+    """
     sql_query = 'SELECT * FROM movies WHERE id = %s'
     return db_wrapper(sql_query, args=[movie_id])
 
 @movies_controller.route(f'{base_url}/filtered', methods=['GET'])
-# Examples: http://localhost:8000/movies/filtered,
-#   http://localhost:8000/movies/filtered?title=Blue
-#   http://localhost:8000/movies/filtered?title=%Blue%
-#   http://localhost:8000/movies/filtered?runtime_from=50&runtime_to_100&genre=Adventure
 def get_movies_filtered():
-    # with filters like date range, name, etc.
+    """
+    Get movies by filters, including date range, name, etc.
+
+    Examples Endpoints:
+        http://localhost:8000/movies/filtered,
+        http://localhost:8000/movies/filtered?title=Blue
+        http://localhost:8000/movies/filtered?title=%Blue%
+        http://localhost:8000/movies/filtered?runtime_from=50&runtime_to_100&genre=Adventure
+    """
     separator = '_'
 
     # TODO: make more resilient (no hard coding...)
@@ -70,7 +83,7 @@ def get_movies_filtered():
     non_comparable_placeholder = 'XXX'
     non_comparables = [order_by, 'groupby', order_direction]
 
-    # The RHS column to query from
+    # The RHS column to query from in the database
     filters = ['title', 'rating_from', 'rating_to', 'genre', 'year_from', 'year_to', 'score_from', 'score_to', 'star', 'runtime_from', 'runtime_to', order_by, order_direction]
 
     # Comparison operator between argument and column
@@ -78,20 +91,21 @@ def get_movies_filtered():
     ops = ['LIKE', '>= ', '<=', '=', '>=', '<=', '>=', '<=', '=', '>=', '<=', non_comparable_placeholder, non_comparable_placeholder]
 
     # TODO: better string builder logic (concat is slow)
-    # TODO: front-end needs to handle 'LIKE' argument: add leading and trailing % to search within whole string
     # TODO: also lower-case/upper-case cleaning of arguments.
     query = 'SELECT * FROM movies'
     args = []
 
-    # TODO: SECURITY FLAW - need to sanitize queries.
     for f, op in zip(filters, ops):
         if f in request.args:
             parsed_filter = f.split(separator)[0]
             rhs = ' %s'
             if f not in non_comparables:
-                if len(f.split(separator)) == 1: # string column, title, genre, star, etc.
+                # String column, title, genre, star, etc.
+                #   Enforce string insensitivity
+                if len(f.split(separator)) == 1:
                     parsed_filter = 'LOWER(' + parsed_filter + ')'
                     rhs = ' LOWER(%s)'
+
                 # Comparison filter
                 if len(args) == 0:
                     # TODO: use string.format(...)
@@ -99,6 +113,7 @@ def get_movies_filtered():
                 else:
                     query += ' AND ' + parsed_filter + ' ' + op + rhs
                 
+                # If comparer is LIKE, we want to search anywhere in string, wrap in %
                 if op == 'LIKE':
                     args.append('%'+request.args.get(f)+'%')
                 else:
@@ -108,16 +123,10 @@ def get_movies_filtered():
                 col_to_order_by = request.args.get(f)
                 query += ' ORDER BY ' + col_to_order_by
             elif f == order_direction:
-                # we handle ORDER BY above (before the sort order). At the end, let's append the order direction
+                # Handled ORDER BY above (before the sort order). At the end, let's append the order direction
                 order = 'ASC' # default for now TODO
                 if request.args.get(f) == 'DESC':
                     order = 'DESC'
                 query += ' ' + order
-    print(query)
-    return db_wrapper(query, args)
 
-# Sanitize a user-supplied string
-# ex. A use supplies: sort by; DROP TABLE *
-def sanitize(s):
-    # TODO
-    return s
+    return db_wrapper(query, args)
