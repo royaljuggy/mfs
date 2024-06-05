@@ -7,9 +7,13 @@ import '../shared/styles.module.css'
 
 const defaultNumber = -1
 const defaultString = '456'
+
+// Class that holds all possible filters that the server can handle
 class Filters {
   genre: string = defaultString
   id: number = defaultNumber
+
+  // TODO: rating should be 'G', 'PG', 'R", etc. and should be multi-selectable (checkboxes.)
   rating_from: number = defaultNumber
   rating_to: number = defaultNumber
   runtime_from: number = defaultNumber
@@ -30,14 +34,12 @@ export default function Search() {
 
   function buildFilterString(filters: Filters) {
     var ret = '?'
-    const properties = Object.getOwnPropertyNames(filters)
     var isFirst: boolean = true
     Object.entries(filters).forEach(([property, value]) => {
-      // console.log(property + " '" + value+"'")
-      // console.log(typeof(value))
       if (value != '' && value != 0) {
+        // No default parameters ('' or 0), build filter string (key=value pairs)
+
         // http://127.0.0.1:8000/movies/filtered?genre=&id=0&rating_from=0&rating_to=0&runtime_from=0&runtime_to=0&score_from=0&score_to=0&star=&title=&year_from=&year_to=
-        // No default parameters, build filter
         if (isFirst) {
           ret += `${property}=${value}`
           isFirst = false
@@ -51,14 +53,20 @@ export default function Search() {
     return ret
   }
 
+  // EFFECT
+  // Anytime the query state gets updated, create the filter string and send a GET request to the server
+  // This occurs everytime the UI form's button is submitted
   useEffect(() => {
     if (query) {
-      console.log('query: ' + query)
-      // TODO: take parameters from form, and create key-value pairs for query, like ?title=Blue&dateFrom=1996-01-01, etc.
-
+      const options = {
+        method: "GET",
+        /*
+          WARNING: understand the vulnerabilities of CORS and access control allow origin *. DO NOT use this in production.
+        */
+        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*"},
+      }
       const apiRoot = 'http://127.0.0.1:8000'
       const subsites = '/movies/filtered'
-      // const filterString = '?title=Blue' //...
       const filterString = buildFilterString(query)
 
       const apiURL = apiRoot + subsites + filterString
@@ -93,6 +101,7 @@ export default function Search() {
   const [order_by, set_order_by] = useState('');
   const [order_direction, set_order_direction] = useState('ASC');
 
+  // === Form submit handler
   const handleSubmit = (e: any) => {
     e.preventDefault();
     const formData: Filters = {
@@ -116,12 +125,11 @@ export default function Search() {
     setQuery(formData)
   };
 
-  // todo: don't use any
+  // TODO: don't use any type
+  // === Functions that handle input events (buttons, radio buttons, etc.)
   const handleChange = (setter: any, defaultValue: string) => (e: any) => {
     const value = e.target.value;
-    if (value !== defaultValue) {
-      setter(value);
-    }
+    setter(value);
   };
 
   const handleRadioChange = (setter: any) => (e: any) => {
@@ -130,10 +138,9 @@ export default function Search() {
 
   const handleNumberChange = (setter: any, defaultValue: number) => (e: any) => {
     const value = Number(e.target.value);
-    if (value !== defaultValue) {
-      setter(value);
-    }
+    setter(value)
   };
+
   return (
     <div>
       <h2>For now, only the top 50? movies.</h2>

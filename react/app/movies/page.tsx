@@ -3,6 +3,11 @@
 import React, { useState, useEffect, FormEvent } from 'react';
 import { MovieList } from '../shared/components';
 
+// OLD PAGE.
+
+
+
+
 // TODO use react query or something
 export default function AllMovies() {
   const [movies, setMovies] = useState([])
