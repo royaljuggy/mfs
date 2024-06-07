@@ -53,14 +53,19 @@ Postgres
 
 ### Schema design
 Tables:
-- movies
-- genres
-- actors
-- directors
-- writers
+- movies (PK: id, FK: star (name)) ~~done~~
+- ~~genres~~ no table used. Just use groupBy rather than a table-join to search by genre.
+- actors (PK: star (name))
+- directors (PK: name) - dataset does NOT have this data - need to saearch for it.
+- writers - dataset does NOT have this data - need to saearch for it.
+
+#### Issues
+Firstly, if the primary key of actors is their name, there would be no way to avoid ambiguity with actors of the same name. However, this goes the same for the dataset. We wouldn't know the difference between John Doe in Star Wars and John Doe in Toy Story without delving deep into the cast list (which would take too long.)
 
 ### Bonus
 Ease-of-use: Python script that automatically parses and injects movie data in a .csv into the relevant postgres tables
+
+Find ways to supplement our dataset. That is, add more data to each movie. A simple example would be to add the director's name.
 
 
 ## Other functionality
