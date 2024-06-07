@@ -1,6 +1,8 @@
 # mfs
 mfs - a movie file system
 
+Well... not actually a file system! We're just leveraging Postgres to store our movie data and displaying it to a web interface.
+
 ## Libraries/Downloads Needed
 ### React
 - tailwind
