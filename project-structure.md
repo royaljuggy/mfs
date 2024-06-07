@@ -53,7 +53,7 @@ Postgres
 
 ### Schema design
 Tables:
-- movies (PK: id, FK: star (name)) ~~done~~
+- movies (PK: id, FK: star (name)) **FK TODO**
 - ~~genres~~ no table used. Just use groupBy rather than a table-join to search by genre.
 - actors (PK: star (name))
 - directors (PK: name) - dataset does NOT have this data - need to saearch for it.
