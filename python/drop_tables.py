@@ -37,4 +37,7 @@ drop_table(conn, 'movies')
 # Drop the "actors" table
 drop_table(conn, 'actors')
 
+# Drop the "directors" table
+drop_table(conn, 'directors')
+
 conn.close()

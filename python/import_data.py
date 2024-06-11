@@ -47,6 +47,14 @@ cur.execute("""CREATE TABLE IF NOT EXISTS actors (
 
 conn.commit()
 
+## Directors table
+cur.execute("""CREATE TABLE IF NOT EXISTS directors (
+                id SERIAL PRIMARY KEY,
+                name VARCHAR(255));
+            """)
+
+conn.commit()
+
 # Import data from .csv file
 ## See documentation for required columns
 df = pd.read_csv('movies.csv', na_values=['NaN', 'N/A', '-', ''])
