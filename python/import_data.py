@@ -4,6 +4,7 @@
 
 import psycopg2
 import pandas as pd
+from tqdm import tqdm
 
 # Read credentials from *PRIVATE* credentials.txt file
 separator = '='
@@ -37,7 +38,11 @@ conn.commit()
 ## Actors (Stars) table
 cur.execute("""CREATE TABLE IF NOT EXISTS actors (
                 id SERIAL PRIMARY KEY,
-                name VARCHAR(255) NOT NULL);
+                name VARCHAR(255),
+                birth_year INTEGER,
+                death_year INTEGER,
+                professions VARCHAR(255),
+                known_title VARCHAR(255));
             """)
 
 conn.commit()
@@ -53,7 +58,7 @@ def clean_cell(value):
     return value
 
 # Parse out only columns we care for
-for index, row in df.iterrows():
+for index, row in tqdm(df.iterrows(), total=df.shape[0]):
     # Extract values from the DataFrame row
     title = clean_cell(row['title'])
     rating = clean_cell(row['rating'])
@@ -72,18 +77,46 @@ for index, row in df.iterrows():
     # Execute the INSERT statement
     cur.execute(insert_query, (title, rating, genre, year, score, star, runtime))
 
-    # Construct statement to insert into actors table
-    insert_actor = """
-    INSERT INTO actors (name)
-    VALUES (%s)
+conn.commit()
+
+print("Finished importing movies.")
+
+# Import actors
+## See documentation for required columns
+actors_df = pd.read_csv('actors.csv', na_values=['NaN', 'N/A', '-', ''])
+actors_df = actors_df.where(pd.notnull(actors_df), None)
+
+def clean_cell(value):
+    if pd.isnull(value) or value == '':
+        return None
+    return value
+
+# Parse out only columns we care for
+for index, row in tqdm(actors_df.iterrows(), total=actors_df.shape[0]):
+    # Extract values from the DataFrame row
+    name = clean_cell(row['name'])
+    birth_year = clean_cell(row['birth_year'])
+    death_year = clean_cell(row['death_year'])
+    professions = clean_cell(row['professions'])
+    known_title = clean_cell(row['known_title'])
+
+    # Data validation
+    # TODO: if the text is too long, the insert statement won't work.
+    if len(known_title) > 255 or len(professions) > 255 or len(name) > 255:
+        continue
+
+    # Construct the SQL INSERT statement
+    insert_query = """
+    INSERT INTO actors (name, birth_year, death_year, professions, known_title) 
+    VALUES (%s, %s, %s, %s, %s)
     """
 
-    if star is not None:
-        cur.execute(insert_actor, (star,))
+    # Execute the INSERT statement
+    cur.execute(insert_query, (name, birth_year, death_year, professions, known_title))
 
 conn.commit()
 
+print("Finished importing actors.")
 # Close connections
 cur.close()
 conn.close()
-

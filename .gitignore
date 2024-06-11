@@ -5,6 +5,7 @@ __pycache__/
 
 # jmeksava
 *credentials*
+python/credentials.txt
 
 *package.json
 *package.lock.json
