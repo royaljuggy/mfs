@@ -12,6 +12,7 @@ Well... not actually a file system! We're just leveraging Postgres to store our 
 - psycopg2 `pip install psycopg2-binary` or `pip install psycopg2`
 - pandas `pip install pandas`
 - flask `pip install flask`
+- tqdm `pip install tqdm`
 
 ### Schema
 - Postgres installation
