@@ -59,9 +59,12 @@ def get_all_movies():
 @movies_controller.route(f'{base_url}/<int:movie_id>', methods=['GET'])
 def get_movie_by_id(movie_id):
     """
-    Get movie by id
+    Get movie by id, including extra information about the movie's star
     """
-    sql_query = 'SELECT * FROM movies WHERE id = %s'
+    sql_query = '''SELECT movies.id AS movie_id, movies.*, actors.id AS actor_id, actors.* FROM movies LEFT JOIN actors
+                    ON movies.star = actors.name
+                    WHERE movies.id = %s
+                '''
     return db_wrapper(sql_query, args=[movie_id])
 
 @movies_controller.route(f'{base_url}/filtered', methods=['GET'])
@@ -122,7 +125,7 @@ def get_movies_filtered():
                 # Sortby filter (likely) TODO: enforce non-comparables are always checked at the end.
                 col_to_order_by = request.args.get(f)
                 query += ' ORDER BY ' + col_to_order_by
-            elif f == order_direction:
+            elif order_by in request.args and f == order_direction:
                 # Handled ORDER BY above (before the sort order). At the end, let's append the order direction
                 order = 'ASC' # default for now TODO
                 if request.args.get(f) == 'DESC':
