@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, FormEvent } from 'react';
-import Movie from '../../shared/objects'
+import { Movie } from '../../shared/objects'
 import styles from './styles.module.css';
 
 const MoviePage = (props: any) => {

@@ -1,0 +1,22 @@
+.actorPage {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 2rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.title {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.name, .birth_year, .death_year, .runtime, .score, .star, .year {
+    font-size: 1.2rem;
+    margin: 0.5rem 0;
+}
+
+/* strong {
+    color: #333;
+} */

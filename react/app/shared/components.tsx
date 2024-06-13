@@ -1,4 +1,4 @@
-import Movie from './objects'
+import { Movie } from './objects'
 import styles from './styles.module.css'
 
 export function MovieCard(props: any) {

@@ -1,0 +1,77 @@
+.card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 16px;
+  padding: 16px;
+  flex: 1 1 calc(33.333% - 32px);
+  width: calc(100% - 32px);
+  max-width: 300px;
+  background-color: #fff;
+  transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 12px;
+}
+
+.cardHeader h2 {
+  margin: 0;
+  font-size: 1.5em;
+}
+
+.cardHeader .year {
+  font-size: 1em;
+  color: #777;
+}
+
+.cardBody p {
+  margin: 8px 0;
+  font-size: 1em;
+  color: #333;
+}
+
+.cardBody p strong {
+  color: #000;
+}
+
+.continueCard {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 16px;
+  padding: 16px;
+  flex: 1 1 calc(33.333% - 32px);
+  width: calc(100% - 32px);
+  max-width: 300px;
+  background-color: #fff;
+  transition: box-shadow 0.3s ease;
+}
+
+.continueText {
+  font-size: 2em;
+  color: '#333';
+}
+
+.wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+    padding: 16px;
+}
+
+.list-header {
+    /* To update. */
+    font-size: 10em; 
+}
