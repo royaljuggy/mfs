@@ -39,7 +39,7 @@ export default function Page(props: any) {
       setActor(data.value[0])
       return data.value[0]
     })
-  })
+  }, [props.params.actor_id])
 
   if (!actor) {
     return <div>Loading...</div>;

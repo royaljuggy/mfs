@@ -10,7 +10,7 @@ const MoviePage = (props: any) => {
     <div className={styles.moviePage}>
       <h1 className={styles.title}>{movie.title}</h1>
       <p className={styles.genre}><strong>Genre:</strong> {movie.genre}</p>
-      <p className={styles.id}><strong>ID:</strong> {movie.id}</p>
+      <p className={styles.id}><strong>ID:</strong> {movie.movie_id}</p>
       <p className={styles.rating}><strong>Rating:</strong> {movie.rating}</p>
       <p className={styles.runtime}><strong>Runtime:</strong> {movie.runtime} minutes</p>
       <p className={styles.score}><strong>Score:</strong> {movie.score}</p>
@@ -23,7 +23,7 @@ const MoviePage = (props: any) => {
 export default function Page(props: any) {
 
   const [movie, setMovie] = useState(null)
-  
+
   useEffect(() => {
 
     // TODO? move into pages directory, to allow router.isFallback (loading icon) https://stackoverflow.com/questions/76267351/how-to-fetch-data-server-side-in-the-latest-next-js-tried-getstaticprops-but-it
@@ -35,7 +35,7 @@ export default function Page(props: any) {
       setMovie(data.value[0])
       return data.value[0]
     })
-  })
+  }, [props.params.movie_id])
 
   if (!movie) {
     return <div>Loading...</div>;
